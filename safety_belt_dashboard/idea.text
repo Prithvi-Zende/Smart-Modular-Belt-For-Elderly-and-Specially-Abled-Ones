@@ -1,0 +1,10 @@
+generate prompt to generate code for below funtioning dashboard  
+project idea:-safety waist belt for blind people
+product:- waistbelt
+components:- 1. mpu6050, 2.ir  , 3. touchsensor, 4.ardiuno
+code setup :- two part hardware pc1(transmitter.js)sends real time reading and software pc2(receiver.js) receives data from transmitter pc in terminal
+software dashboard requirements:- dashboard layout: navbar (will show user profile icon), side bar1(left) : edit user profile opt, sidebar2(right side): will show connection status with the tansmitter pc through websocket give opt to connect and disconnect, notification
+                                1. container1(mpu6050): shows human motion in 3d view
+                                2.container2(irsensor)(below container1):in a table wil show path status wheether the status is clear or not with time stamps eg.clear and object detect.sjoww alert pop up on object detection.
+                                3.container3(touchsensor)(parallel to container 2): will show call sta whether connected disconnected or missed call with time stamps. 
+fix  code according to this

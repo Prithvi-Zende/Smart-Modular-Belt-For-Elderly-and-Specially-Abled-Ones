@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SafeStep | Safety Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <h2 class="logo">Safe<span>Step</span></h2>
+    <p class="nav-label">MAIN MENU</p>
+    <button class="nav active" data-page="dashboard">▦ Dashboard</button>
+    <button class="nav" data-page="obstacles">◉ Obstacle History</button>
+    <button class="nav" data-page="sos">♧ SOS / Fall History</button>
+    <button class="nav" data-page="profile">♙ Edit Profile</button>
+    <button class="nav" data-page="settings">⚙ Settings</button>
+    <div class="sidebar-footer">
+      <div class="live-dot"></div>
+      <strong>Safety Monitor</strong>
+      <p>Smart wearable assistance system</p>
+    </div>
+  </aside>
+
+  <main>
+    <header class="topbar">
+      <div>
+        <h1 id="pageTitle">Safety Dashboard</h1>
+        <p class="muted">Smart Waist Belt Monitoring · <span id="clock"></span></p>
+      </div>
+      <div class="user-area">
+        <span id="connectionBadge" class="badge offline">● Disconnected</span>
+        <div class="avatar" id="avatar">U</div>
+        <span id="userName">User</span>
+      </div>
+    </header>
+
+    <!-- DASHBOARD PAGE -->
+    <section id="dashboard" class="page active">
+      <div class="hero">
+        <div>
+          <h2>Smart Safety Monitoring</h2>
+          <p>Real-time motion, fall detection, obstacle and SOS alerts.</p>
+        </div>
+        <span class="hero-badge" id="modeLabel">LIVE HARDWARE</span>
+      </div>
+
+      <!-- Stat cards -->
+      <div class="stats">
+        <article class="card stat">
+          <div class="stat-icon pink">⌁</div>
+          <div><strong id="tiltStat">--°</strong><p>Tilt Angle</p></div>
+        </article>
+        <article class="card stat">
+          <div class="stat-icon purple">↯</div>
+          <div><strong id="accMagStat">--</strong><p>Accel Magnitude</p></div>
+        </article>
+        <article class="card stat">
+          <div class="stat-icon blue">◉</div>
+          <div><strong id="obstacleCount">0</strong><p>Obstacle Events</p></div>
+        </article>
+        <article class="card stat">
+          <div class="stat-icon green">♧</div>
+          <div><strong id="sosCount">0</strong><p>SOS / Fall Events</p></div>
+        </article>
+      </div>
+
+      <!-- Main grid -->
+      <div class="main-grid">
+
+        <!-- 3D Motion card -->
+        <article class="card">
+          <div class="card-heading">
+            <h3>MPU6050 · 3D Motion</h3>
+            <span id="mpuStatus" class="badge waiting">WAITING</span>
+          </div>
+
+          <div class="motion-scene">
+            <div class="floor-grid"></div>
+            <div class="orbit orbit-one"></div>
+            <div class="orbit orbit-two"></div>
+            <div class="device" id="device"><span>MPU6050</span></div>
+            <div class="scene-label">DEVICE ORIENTATION</div>
+          </div>
+
+          <div class="motion-metrics">
+            <div><span>AccX</span><strong id="accX">--</strong></div>
+            <div><span>AccY</span><strong id="accY">--</strong></div>
+            <div><span>AccZ</span><strong id="accZ">--</strong></div>
+            <div><span>GyroX</span><strong id="gyroX">--</strong></div>
+            <div><span>GyroY</span><strong id="gyroY">--</strong></div>
+            <div><span>GyroZ</span><strong id="gyroZ">--</strong></div>
+          </div>
+
+          <div class="motion-metrics" style="margin-top:10px">
+            <div><span>Tilt</span><strong id="tilt">--°</strong></div>
+            <div><span>AccMag</span><strong id="accMag">--</strong></div>
+            <div><span>Temp</span><strong id="appTemp">--°C</strong></div>
+          </div>
+
+          <div class="note" style="margin-top:12px">Device orientation is driven by AccX/AccY/AccZ from the MPU6050.</div>
+        </article>
+
+        <!-- Sensor status card -->
+        <article class="card">
+          <div class="card-heading">
+            <h3>Sensor Status</h3>
+            <span class="muted small">REAL TIME</span>
+          </div>
+
+          <div class="sensor-row">
+            <div class="sensor-icon">⌁</div>
+            <div class="sensor-info"><strong>MPU6050</strong><p>Motion &amp; orientation</p></div>
+            <span id="mpuBadge" class="badge waiting">WAITING</span>
+          </div>
+          <div class="sensor-row">
+            <div class="sensor-icon">◉</div>
+            <div class="sensor-info"><strong>IR Sensor</strong><p id="irDescription">Waiting for data</p></div>
+            <span id="irBadge" class="badge waiting">WAITING</span>
+          </div>
+          <div class="sensor-row">
+            <div class="sensor-icon">⚠</div>
+            <div class="sensor-info"><strong>Fall Alarm</strong><p id="fallDescription">Waiting for data</p></div>
+            <span id="fallBadge" class="badge waiting">WAITING</span>
+          </div>
+          <div class="sensor-row">
+            <div class="sensor-icon">♧</div>
+            <div class="sensor-info"><strong>SOS Button</strong><p id="sosDescription">Waiting for data</p></div>
+            <span id="sosBadge" class="badge waiting">WAITING</span>
+          </div>
+
+          <label for="wsUrl">Server URL</label>
+          <input id="wsUrl" value="http://localhost:3000" placeholder="http://192.168.1.10:3000">
+
+          <div class="button-group">
+            <button class="btn primary" id="connectBtn">Connect</button>
+            <button class="btn" id="disconnectBtn">Disconnect</button>
+            <button class="btn" id="demoBtn">Start Demo</button>
+          </div>
+          <p class="note" id="connectionMessage">Connect to the server to receive live sensor readings.</p>
+        </article>
+      </div>
+
+      <!-- History tables -->
+      <div class="history-grid">
+        <article class="card">
+          <div class="card-heading">
+            <h3>IR Obstacle History</h3>
+            <button class="btn small" data-go="obstacles">View all →</button>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>TIME</th><th>EVENT</th><th>STATUS</th></tr></thead>
+              <tbody id="obstacleRows"><tr><td colspan="3" class="empty">No events received.</td></tr></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-heading">
+            <h3>SOS / Fall History</h3>
+            <button class="btn small" data-go="sos">View all →</button>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>TIME</th><th>EVENT</th><th>STATUS</th></tr></thead>
+              <tbody id="sosRows"><tr><td colspan="3" class="empty">No events received.</td></tr></tbody>
+            </table>
+          </div>
+          <button class="btn primary full" id="requestSos">Request Assistance</button>
+          <p class="note">Records a local assistance request. No call or SMS is sent.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- OBSTACLE HISTORY PAGE -->
+    <section id="obstacles" class="page">
+      <article class="card">
+        <div class="card-heading"><h3>All Obstacle Events</h3><button id="clearObstacles" class="btn">Clear History</button></div>
+        <div class="table-scroll">
+          <table><thead><tr><th>TIME</th><th>EVENT</th><th>STATUS</th></tr></thead><tbody id="allObstacleRows"></tbody></table>
+        </div>
+      </article>
+    </section>
+
+    <!-- SOS / FALL HISTORY PAGE -->
+    <section id="sos" class="page">
+      <article class="card">
+        <div class="card-heading"><h3>All SOS / Fall Events</h3><button id="clearSos" class="btn">Clear History</button></div>
+        <div class="table-scroll">
+          <table><thead><tr><th>TIME</th><th>EVENT</th><th>STATUS</th></tr></thead><tbody id="allSosRows"></tbody></table>
+        </div>
+      </article>
+    </section>
+
+    <!-- PROFILE PAGE -->
+    <section id="profile" class="page">
+      <article class="card form-card">
+        <h3>Edit User Profile</h3>
+        <form id="profileForm">
+          <label for="profileName">Full Name</label>
+          <input id="profileName" required maxlength="80">
+          <label for="profileEmail">Email</label>
+          <input id="profileEmail" type="email" maxlength="150">
+          <label for="profileContact">Emergency Contact</label>
+          <input id="profileContact" maxlength="40">
+          <button class="btn primary" type="submit">Save Profile</button>
+        </form>
+        <p class="note">Profile details are saved in this browser only.</p>
+      </article>
+    </section>
+
+    <!-- SETTINGS PAGE -->
+    <section id="settings" class="page">
+      <article class="card form-card">
+        <h3>Connection Settings</h3>
+        <label for="settingsUrl">Server URL</label>
+        <input id="settingsUrl" value="http://localhost:3000">
+        <button class="btn primary" id="saveSettings">Save and Connect</button>
+        <p class="note">Use the server computer's LAN IP and port 3000, e.g. http://192.168.1.10:3000</p>
+      </article>
+    </section>
+
+    <footer class="footer">
+      <span>SafeStep · Smart Wearable Safety</span>
+      <span>Last sensor update: <strong id="lastUpdate">Never</strong></span>
+    </footer>
+  </main>
+</div>
+<script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
